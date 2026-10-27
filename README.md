@@ -185,4 +185,5 @@ int main()
 
 
 Output:
+
 <img width="251" height="200" alt="image" src="https://github.com/user-attachments/assets/df6fa681-5d43-4d24-a0ec-d86be20e77c8" />
