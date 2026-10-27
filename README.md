@@ -26,15 +26,159 @@ To encrypt a message, one would break the message into digrams (groups of 2 lett
 ## ALGORITHM:
 
 STEP-1: Read the plain text from the user.
+
 STEP-2: Read the keyword from the user.
+
 STEP-3: Arrange the keyword without duplicates in a 5*5 matrix in the row order and fill the remaining cells with missed out letters in alphabetical order. Note that ‘i’ and ‘j’ takes the same cell.
+
 STEP-4: Group the plain text in pairs and match the corresponding corner letters by forming a rectangular grid.
+
 STEP-5: Display the obtained cipher text.
 
 
 
 
 Program:
+```
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+int main()
+{
+    char key[100], text[200], prepared[400];
+    char cipher[400], decrypted[400], matrix[5][5];
+    int used[26] = {0};
+    int i, j, k = 0, len = 0;
+    int r1, c1, r2, c2;
+    char a, b, temp;
+    printf("Enter the keyword: ");
+    scanf("%99s", key);
+    printf("Enter the plaintext: ");
+    scanf("%199s", text);
+    for (i = 0; key[i] != '\0'; i++)
+    {
+        temp = tolower(key[i]);
+        if (temp == 'j')
+            temp = 'i';
+        if (temp >= 'a' && temp <= 'z' && !used[temp - 'a'])
+        {
+            matrix[k / 5][k % 5] = temp;
+            used[temp - 'a'] = 1;
+            k++;
+        }
+    }
+    used['j' - 'a'] = 1;
+    for (i = 0; i < 26; i++)
+    {
+        if (!used[i])
+        {
+            matrix[k / 5][k % 5] = 'a' + i;
+            k++;
+        }
+    }
+    printf("\nKey Matrix:\n");
+    for (i = 0; i < 5; i++)
+    {
+        for (j = 0; j < 5; j++)
+            printf("%c ", matrix[i][j]);
+        printf("\n");
+    }
+    for (i = 0; text[i] != '\0'; i++)
+    {
+        text[i] = tolower(text[i]);
+        if (text[i] == 'j')
+            text[i] = 'i';
+    }
+    i = 0;
+    while (text[i] != '\0')
+    {
+        a = text[i++];
+        prepared[len++] = a;
+        if (text[i] == '\0' || a == text[i])
+        {
+            prepared[len++] = (a == 'x') ? 'q' : 'x';
+        }
+        else
+        {
+            prepared[len++] = text[i++];
+        }
+    }
+    prepared[len] = '\0';
+    for (i = 0; i < len; i += 2)
+    {
+        a = prepared[i];
+        b = prepared[i + 1];
+        for (j = 0; j < 25; j++)
+        {
+            if (matrix[j / 5][j % 5] == a)
+            {
+                r1 = j / 5;
+                c1 = j % 5;
+            }
+            if (matrix[j / 5][j % 5] == b)
+            {
+                r2 = j / 5;
+                c2 = j % 5;
+            }
+        }
+        if (r1 == r2)
+        {
+            cipher[i] = matrix[r1][(c1 + 1) % 5];
+            cipher[i + 1] = matrix[r2][(c2 + 1) % 5];
+        }
+        else if (c1 == c2)
+        {
+            cipher[i] = matrix[(r1 + 1) % 5][c1];
+            cipher[i + 1] = matrix[(r2 + 1) % 5][c2];
+        }
+        else
+        {
+            cipher[i] = matrix[r1][c2];
+            cipher[i + 1] = matrix[r2][c1];
+        }
+    }
+    cipher[len] = '\0';
+    printf("\nEncrypted text: %s\n", cipher);
+    for (i = 0; i < len; i += 2)
+    {
+        a = cipher[i];
+        b = cipher[i + 1];
+        for (j = 0; j < 25; j++)
+        {
+            if (matrix[j / 5][j % 5] == a)
+            {
+                r1 = j / 5;
+                c1 = j % 5;
+            }
+            if (matrix[j / 5][j % 5] == b)
+            {
+                r2 = j / 5;
+                c2 = j % 5;
+            }
+        }
+        if (r1 == r2)
+        {
+            decrypted[i] = matrix[r1][(c1 + 4) % 5];
+            decrypted[i + 1] = matrix[r2][(c2 + 4) % 5];
+        }
+        else if (c1 == c2)
+        {
+            decrypted[i] = matrix[(r1 + 4) % 5][c1];
+            decrypted[i + 1] = matrix[(r2 + 4) % 5][c2];
+        }
+        else
+        {
+            decrypted[i] = matrix[r1][c2];
+            decrypted[i + 1] = matrix[r2][c1];
+        }
+    }
+    decrypted[len] = '\0';
+    if (len > 0 && decrypted[len - 1] == 'x')
+        decrypted[len - 1] = '\0';
+    printf("Decrypted text: %s\n", decrypted);
+    return 0;
+}
+```
 
 
 
